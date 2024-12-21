@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Information</title>
+    <link rel="stylesheet" href="toolscss.css">
+    <script>
+        function focusSearchBar() {
+            const searchbar = document.getElementById('searchbar');
+            searchbar.focus();
+            searchbar.select();
+        }
+
+        function filterButtons() {
+            const query = document.getElementById('searchbar').value.toLowerCase();
+            const buttons = document.querySelectorAll('.menu-item');
+            buttons.forEach(button => {
+                const buttonText = button.textContent.toLowerCase();
+                if (buttonText.includes(query)) {
+                    button.style.display = 'block';
+                } else {
+                    button.style.display = 'none';
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if ((event.ctrlKey && event.key === 'k') || (event.ctrlKey && event.key === 'e')) {
+                event.preventDefault();
+                focusSearchBar();
+            }
+        });
+
+        document.addEventListener('input', function() {
+            filterButtons();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div id="navbar" class="toolmenu">
+            <input placeholder="Click here to search..." class="search" id="searchbar">
+            <button class="menu-item" onclick="window.location.href='tools.html'">Master</button>
+            <button class="menu-item" onclick="window.location.href='abtbemb.html'">About:blank embedder</button>
+            <button class="menu-item" onclick="window.location.href='utf8.html'">UTF-8 Encoder</button>
+            <button class="menu-item" onclick="window.location.href='userinfo.html'">User Info</button>
+            <button class="menu-item" onclick="window.location.href='countupordown.html'">Countup/Countdown</button>
+            <button class="menu-item" onclick="window.location.href='timezone.html'">Your Time</button>
+            <button class="menu-item" onclick="window.location.href='randompw.html'">Password Gen</button>
+        </div>
+
+        <main>
+            <h1>Your Time Zone Information</h1>
+            <div class="info">
+                <p id="timezone-name">Loading time zone...</p>
+                <p id="current-time">Loading current time...</p>
+                <p id="time-zone-offset">Loading time zone offset...</p>
+            </div>
+
+            <script>
+                function updateTime() {
+                    const currentTime = new Date();
+                    const timeZoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    const timeZoneOffset = currentTime.getTimezoneOffset() / -60;
+
+                    document.getElementById('timezone-name').textContent = 'Time Zone: ' + timeZoneName;
+                    document.getElementById('time-zone-offset').textContent = 'Time Zone Offset: UTC ' + (timeZoneOffset >= 0 ? '+' : '') + timeZoneOffset + ' hours';
+
+                    const formattedTime = currentTime.toLocaleTimeString();
+                    document.getElementById('current-time').textContent = 'Current Time: ' + formattedTime;
+                }
+
+                setInterval(updateTime, 1000);
+                updateTime();
+            </script>
+        </main>
+    </div>
+</body>
+</html>

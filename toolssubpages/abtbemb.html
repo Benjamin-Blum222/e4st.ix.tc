@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <title>Benjamin's HTML Tools</title>
+        <link rel="stylesheet" href="toolscss.css">
+        <script>
+            function focusSearchBar() {
+                const searchbar = document.getElementById('searchbar');
+                searchbar.focus();
+                searchbar.select();
+            }
+
+            function filterButtons() {
+                const query = document.getElementById('searchbar').value.toLowerCase();
+                const buttons = document.querySelectorAll('.menu-item');
+                buttons.forEach(button => {
+                    const buttonText = button.textContent.toLowerCase();
+                    if (buttonText.includes(query)) {
+                        button.style.display = 'block';
+                    } else {
+                        button.style.display = 'none';
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', function(event) {
+                if ((event.ctrlKey && event.key === 'k') || (event.ctrlKey && event.key === 'e')) {
+                    event.preventDefault();
+                    focusSearchBar();
+                }
+            });
+
+            document.addEventListener('input', function() {
+                filterButtons();
+            });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div id="navbar" class="toolmenu">
+                <input placeholder="Click here to search..." class="search" id="searchbar">
+                <button class="menu-item" onclick="window.location.href='tools.html'">Master</button>
+                <button class="menu-item" onclick="window.location.href='abtbemb.html'">About:blank embedder</button>
+                <button class="menu-item" onclick="window.location.href='utf8.html'">UTF-8 Encoder</button>
+                <button class="menu-item" onclick="window.location.href='userinfo.html'">User Info</button>
+                <button class="menu-item" onclick="window.location.href='countupordown.html'">Countup/Countdown</button>
+                <button class="menu-item" onclick="window.location.href='timezone.html'">Your Time</button>
+                <button class="menu-item" onclick="window.location.href='randompw.html'">Password Gen</button>
+            </div>
+            <main>
+            </main>
+        </div>
+    </body>
+</html>

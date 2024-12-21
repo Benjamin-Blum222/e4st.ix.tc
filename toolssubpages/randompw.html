@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <link rel="stylesheet" href="toolscss.css">
+    <script>
+        function focusSearchBar() {
+            const searchbar = document.getElementById('searchbar');
+            searchbar.focus();
+            searchbar.select();
+        }
+
+        function filterButtons() {
+            const query = document.getElementById('searchbar').value.toLowerCase();
+            const buttons = document.querySelectorAll('.menu-item');
+            buttons.forEach(button => {
+                const buttonText = button.textContent.toLowerCase();
+                if (buttonText.includes(query)) {
+                    button.style.display = 'block';
+                } else {
+                    button.style.display = 'none';
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if ((event.ctrlKey && event.key === 'k') || (event.ctrlKey && event.key === 'e')) {
+                event.preventDefault();
+                focusSearchBar();
+            }
+        });
+
+        document.addEventListener('input', function() {
+            filterButtons();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div id="navbar" class="toolmenu">
+            <input placeholder="Click here to search..." class="search" id="searchbar">
+            <button class="menu-item" onclick="window.location.href='tools.html'">Master</button>
+            <button class="menu-item" onclick="window.location.href='abtbemb.html'">About:blank embedder</button>
+            <button class="menu-item" onclick="window.location.href='utf8.html'">UTF-8 Encoder</button>
+            <button class="menu-item" onclick="window.location.href='userinfo.html'">User Info</button>
+            <button class="menu-item" onclick="window.location.href='countupordown.html'">Countup/Countdown</button>
+            <button class="menu-item" onclick="window.location.href='timezone.html'">Your Time</button>
+            <button class="menu-item" onclick="window.location.href='randompw.html'">Password Gen</button>
+        </div>
+        <main>
+            <h1>Password Generator</h1>
+
+            <label for="length">Password Length:</label>
+            <input type="number" id="length" value="12" min="8" max="128">
+
+            <div>
+                <label for="uppercase">Include Uppercase Letters</label>
+                <input type="checkbox" id="uppercase" checked>
+            </div>
+            <div>
+                <label for="lowercase">Include Lowercase Letters</label>
+                <input type="checkbox" id="lowercase" checked>
+            </div>
+            <div>
+                <label for="numbers">Include Numbers</label>
+                <input type="checkbox" id="numbers" checked>
+            </div>
+            <div>
+                <label for="special">Include Special Characters</label>
+                <input type="checkbox" id="special" checked>
+            </div>
+
+            <button onclick="generatePassword()">Generate Password</button>
+            <p id="password"></p>
+
+            <script>
+                function generatePassword() {
+                    const length = document.getElementById('length').value;
+                    const useUppercase = document.getElementById('uppercase').checked;
+                    const useLowercase = document.getElementById('lowercase').checked;
+                    const useNumbers = document.getElementById('numbers').checked;
+                    const useSpecial = document.getElementById('special').checked;
+
+                    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+                    const numberChars = '0123456789';
+                    const specialChars = '!@#$%^&*()_-+=[]{}|;:,.<>?';
+
+                    let characters = '';
+                    if (useUppercase) characters += uppercaseChars;
+                    if (useLowercase) characters += lowercaseChars;
+                    if (useNumbers) characters += numberChars;
+                    if (useSpecial) characters += specialChars;
+
+                    if (characters === '') {
+                        alert('You must select at least one character type!');
+                        return;
+                    }
+
+                    let password = '';
+                    for (let i = 0; i < length; i++) {
+                        const randomIndex = Math.floor(Math.random() * characters.length);
+                        password += characters.charAt(randomIndex);
+                    }
+
+                    document.getElementById('password').innerText = password;
+                }
+            </script>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <title>Benjamin's HTML Tools</title>
+        <link rel="stylesheet" href="toolscss.css">
+        <script>
+            function focusSearchBar() {
+                const searchbar = document.getElementById('searchbar');
+                searchbar.focus();
+                searchbar.select();
+            }
+
+            function filterButtons() {
+                const query = document.getElementById('searchbar').value.toLowerCase();
+                const buttons = document.querySelectorAll('.menu-item');
+                buttons.forEach(button => {
+                    const buttonText = button.textContent.toLowerCase();
+                    if (buttonText.includes(query)) {
+                        button.style.display = 'block';
+                    } else {
+                        button.style.display = 'none';
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', function(event) {
+                if ((event.ctrlKey && event.key === 'k') || (event.ctrlKey && event.key === 'e')) {
+                    event.preventDefault();
+                    focusSearchBar();
+                }
+            });
+
+            document.addEventListener('input', function() {
+                filterButtons();
+            });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div id="navbar" class="toolmenu">
+                <input placeholder="Click here to search..." class="search" id="searchbar">
+                <button class="menu-item" onclick="window.location.href='tools.html'">Master</button>
+                <button class="menu-item" onclick="window.location.href='abtbemb.html'">About:blank embedder</button>
+                <button class="menu-item" onclick="window.location.href='utf8.html'">UTF-8 Encoder</button>
+                <button class="menu-item" onclick="window.location.href='userinfo.html'">User Info</button>
+                <button class="menu-item" onclick="window.location.href='countupordown.html'">Countup/Countdown</button>
+                <button class="menu-item" onclick="window.location.href='timezone.html'">Your Time</button>
+                <button class="menu-item" onclick="window.location.href='randompw.html'">Password Gen</button>
+            </div>
+            <main>
+                <h1>Countdown/Countup Timer</h1>
+                <h3>Please allow notifications so the website informs you when your timer is over!</h3>
+                <div>
+                    <input type="number" id="hours" placeholder="HH" min="0" value="HH"> :
+                    <input type="number" id="minutes" placeholder="MM" min="0" value="MM"> :
+                    <input type="number" id="seconds" placeholder="SS" min="0" value="SS">
+                </div>
+
+                <label for="mode">Mode:</label>
+                <select id="mode">
+                    <option value="countdown">Countdown</option>
+                    <option value="countup">Countup</option>
+                </select>
+
+                <button id="startButton" class="greenbutton">Start</button>
+                <button id="stopButton" class="redbutton">Stop</button>
+                <button id="resetButton">Reset</button>
+
+                <div id="timerDisplay">00:00:00</div>
+
+                <script>
+                    let timer;
+                    let totalSeconds = 0;
+
+                    const hoursInput = document.getElementById("hours");
+                    const minutesInput = document.getElementById("minutes");
+                    const secondsInput = document.getElementById("seconds");
+                    const modeSelect = document.getElementById("mode");
+                    const timerDisplay = document.getElementById("timerDisplay");
+                    const startButton = document.getElementById("startButton");
+                    const stopButton = document.getElementById("stopButton");
+                    const resetButton = document.getElementById("resetButton");
+
+                    function requestNotificationPermission() {
+                        if ("Notification" in window) {
+                            Notification.requestPermission().then(permission => {
+                                if (permission === "denied") {
+                                    console.warn("Notifications are disabled by the user.");
+                                }
+                            });
+                        }
+                    }
+
+                    function sendNotification(message) {
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification(message);
+                        }
+                    }
+
+                    function parseTimeInput() {
+                        const hours = parseInt(hoursInput.value || 0, 10);
+                        const minutes = parseInt(minutesInput.value || 0, 10);
+                        const seconds = parseInt(secondsInput.value || 0, 10);
+                        return hours * 3600 + minutes * 60 + seconds;
+                    }
+
+                    function updateTimerDisplay(seconds) {
+                        const hours = Math.floor(seconds / 3600).toString().padStart(2, "0");
+                        const minutes = Math.floor((seconds % 3600) / 60).toString().padStart(2, "0");
+                        const secs = (seconds % 60).toString().padStart(2, "0");
+                        timerDisplay.textContent = `${hours}:${minutes}:${secs}`;
+                    }
+
+                    function startTimer() {
+                        clearInterval(timer);
+                        totalSeconds = parseTimeInput();
+                        const mode = modeSelect.value;
+
+                        timer = setInterval(() => {
+                            updateTimerDisplay(totalSeconds);
+
+                            if (mode === "countdown") {
+                                totalSeconds--;
+                                if (totalSeconds < 0) {
+                                    clearInterval(timer);
+                                    timerDisplay.textContent = "00:00:00";
+                                    sendNotification("Time's up!");
+                                }
+                            } else if (mode === "countup") {
+                                totalSeconds++;
+                            }
+                        }, 1000);
+                    }
+
+                    function stopTimer() {
+                        clearInterval(timer);
+                    }
+
+                    function resetTimer() {
+                        clearInterval(timer);
+                        timerDisplay.textContent = "00:00:00";
+                        hoursInput.value = "HH";
+                        minutesInput.value = "MM";
+                        secondsInput.value = "SS";
+                    }
+
+                    startButton.addEventListener("click", () => {
+                        requestNotificationPermission();
+                        startTimer();
+                    });
+
+                    stopButton.addEventListener("click", stopTimer);
+                    resetButton.addEventListener("click", resetTimer);
+                </script>
+            </main>
+        </div>
+    </body>
+</html>
